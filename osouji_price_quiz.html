@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>料金暗記トレーナー｜おそうじ革命 研修用</title>
+<style>
+:root{
+  --bg:#f5f7f5;
+  --card:#ffffff;
+  --text:#1f2a22;
+  --muted:#6b756d;
+  --line:#dfe6df;
+  --accent:#2f7d4a;
+  --accent2:#eaf5ed;
+  --bad:#b83232;
+  --badbg:#fdecec;
+  --good:#1f7a3f;
+  --goodbg:#eaf7ef;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:24px;margin:6px 0 4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 5px 18px rgba(0,0,0,.045);
+}
+.controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}
+select,button,input{
+  width:100%;
+  font:inherit;
+}
+select,input{
+  border:1px solid #cfd8cf;
+  background:#fff;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+}
+select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,125,74,.12)}
+.quiz{
+  margin-top:12px;
+  border-top:1px solid var(--line);
+  padding-top:18px;
+}
+.badge{
+  display:inline-block;
+  font-size:12px;
+  color:var(--accent);
+  background:var(--accent2);
+  padding:5px 9px;
+  border-radius:999px;
+  margin-bottom:12px;
+}
+.question{
+  font-size:22px;
+  font-weight:750;
+  line-height:1.5;
+  margin:6px 0 8px;
+}
+.note{
+  min-height:22px;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:14px;
+}
+.answerRow{
+  display:grid;
+  grid-template-columns:1fr 110px;
+  gap:10px;
+}
+.answerBox{position:relative}
+.answerBox input{
+  font-size:26px;
+  font-weight:700;
+  text-align:right;
+  padding-right:42px;
+}
+.yen{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-weight:700;
+}
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 14px;
+  font-weight:700;
+  cursor:pointer;
+}
+.primary{background:var(--accent);color:#fff}
+.secondary{background:#eef1ee;color:var(--text)}
+.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+.result{
+  margin-top:14px;
+  border-radius:12px;
+  padding:13px 14px;
+  display:none;
+  line-height:1.5;
+}
+.result.good{display:block;background:var(--goodbg);color:var(--good)}
+.result.bad{display:block;background:var(--badbg);color:var(--bad)}
+.correctPrice{font-size:24px;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stats{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.stat{
+  background:#f7f9f7;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  text-align:center;
+}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:11px;color:var(--muted)}
+.smallControls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.smallControls button{width:auto;font-size:12px;padding:8px 10px}
+.footer{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+  margin-top:14px;
+}
+@media(max-width:560px){
+  .controls{grid-template-columns:1fr}
+  .answerRow{grid-template-columns:1fr}
+  .question{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>料金暗記トレーナー</h1>
+  <div class="sub">おそうじ革命・研修用｜料金表（2026年2月16日以降）をもとに作成</div>
+
+  <div class="card">
+    <div class="controls">
+      <div>
+        <label for="category">出題範囲</label>
+        <select id="category">
+          <option value="all">全部</option>
+          <option value="基本サービス">基本サービス</option>
+          <option value="エアコン">エアコン</option>
+          <option value="オプション">オプション・コーティング</option>
+          <option value="セット">セット・定額</option>
+        </select>
+      </div>
+      <div>
+        <label for="mode">出題モード</label>
+        <select id="mode">
+          <option value="random">ランダム</option>
+          <option value="mistakes">間違えた問題だけ</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <div class="badge" id="badge">基本サービス</div>
+      <div class="question" id="question">読み込み中...</div>
+      <div class="note" id="note"></div>
+
+      <div class="answerRow">
+        <div class="answerBox">
+          <input id="answer" inputmode="numeric" autocomplete="off" placeholder="例：17930">
+          <span class="yen">円</span>
+        </div>
+        <button class="primary" id="judge">判定</button>
+      </div>
+
+      <div id="result" class="result"></div>
+
+      <div class="actions">
+        <button class="secondary" id="showAnswer">答えを見る</button>
+        <button class="primary" id="next">次の問題</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b id="correct">0</b><span>正解</span></div>
+        <div class="stat"><b id="attempts">0</b><span>回答</span></div>
+        <div class="stat"><b id="accuracy">-</b><span>正答率</span></div>
+      </div>
+
+      <div class="smallControls">
+        <button class="ghost" id="resetStats">成績をリセット</button>
+        <button class="ghost" id="resetMistakes">間違い履歴をリセット</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      入力は「17,930」「¥17,930」「17930」のどれでもOK。<br>
+      「1㎡あたり」「1箇所」「セット料金」など条件がある問題は、問題文・補足に表示します。
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // 基本サービス
+  {id:"kitchen",cat:"基本サービス",q:"キッチン",a:17930},
+  {id:"oven",cat:"基本サービス",q:"備付オーブンレンジ内部",a:11000},
+  {id:"dishwasher",cat:"基本サービス",q:"食洗機内部",a:7700},
+  {id:"sinkcoat",cat:"オプション",q:"シンク水垢防止撥水コーティング",a:3850},
+  {id:"fridge_full",cat:"基本サービス",q:"冷蔵庫（中にモノがある状態）",a:13200},
+  {id:"fridge_empty",cat:"基本サービス",q:"冷蔵庫（中にモノが無い状態）",a:9900},
+  {id:"cupboard",cat:"基本サービス",q:"後置き食器棚表面",a:3850},
+  {id:"rangehood",cat:"基本サービス",q:"レンジフード",a:17930},
+  {id:"propeller",cat:"基本サービス",q:"フード無しプロペラ・天埋換気扇タイプ",a:9900},
+  {id:"bath",cat:"基本サービス",q:"浴室",a:17930},
+  {id:"shower",cat:"基本サービス",q:"シャワー室",a:11000},
+  {id:"bath_toilet_or_basin",cat:"基本サービス",q:"浴室（便器付き or 洗面ボウル）",a:21230},
+  {id:"bath3",cat:"基本サービス",q:"浴室3点ユニット",a:25630,n:"浴室＋トイレ＋洗面ユニット"},
+  {id:"apron",cat:"基本サービス",q:"エプロン内部",a:3080},
+  {id:"bath_dryerfan",cat:"基本サービス",q:"浴室：乾燥機能付き換気扇（内部）",a:11000},
+  {id:"reheatpipe",cat:"基本サービス",q:"浴室追い焚き配管除菌洗浄",a:18700},
+  {id:"bath_reheat",cat:"基本サービス",q:"浴室＋浴室追い焚き配管除菌洗浄",a:34980},
+  {id:"mirror_keskin",cat:"オプション",q:"鏡水垢防止＋菌分解除去コーティング",a:23650},
+  {id:"mirror",cat:"オプション",q:"鏡水垢防止コーティング",a:7700},
+  {id:"washroom",cat:"基本サービス",q:"洗面所",a:8250},
+  {id:"basincoat",cat:"オプション",q:"洗面ボウル水垢防止コーティング（親水）",a:5500},
+  {id:"toilet",cat:"基本サービス",q:"トイレ",a:8250},
+  {id:"urinal",cat:"基本サービス",q:"小便器",a:5500,n:"トイレ内に大便器がある場合"},
+  {id:"tank",cat:"基本サービス",q:"タンク内部",a:3850},
+  {id:"toiletcoat",cat:"オプション",q:"便器内水垢防止コーティング（親水）",a:5500},
+  {id:"toiletkeskin",cat:"オプション",q:"便器内水垢防止＋菌分解除去（Keskin）コーティング",a:15950},
+  {id:"normalfan",cat:"基本サービス",q:"浴室・洗面所・トイレ通常換気扇（内部）",a:3850,n:"1箇所"},
+  {id:"window",cat:"基本サービス",q:"窓ガラス・サッシ（1枠）",a:3850,n:"4mまで。2重窓は＋1,650円"},
+  {id:"screenwash",cat:"基本サービス",q:"網戸洗浄",a:1100,n:"1枚（窓一式ご依頼の場合）"},
+  {id:"fixedwindow",cat:"基本サービス",q:"はめごろし窓",a:2750,n:"1枚"},
+  {id:"shutter_one",cat:"基本サービス",q:"シャッター・雨戸（内側のみ）",a:1650,n:"1枚"},
+  {id:"shutter_both",cat:"基本サービス",q:"シャッター・雨戸（両面）",a:2200,n:"1枚"},
+  {id:"screenreplace",cat:"基本サービス",q:"網戸張り替え",a:3850,n:"1枚"},
+  {id:"glasscoat",cat:"オプション",q:"ガラス外面水垢防止コーティング（親水）",a:11000,n:"ガラス1枚あたり"},
+  {id:"washer_u8",cat:"基本サービス",q:"洗濯機 8kg未満",a:17600},
+  {id:"washer_o8",cat:"基本サービス",q:"洗濯機 8kg以上",a:20900,n:"乾燥機能付：＋5,500円／乾燥機結合：＋8,800円"},
+  {id:"washerpan",cat:"基本サービス",q:"洗濯パン",a:2750,n:"1箇所"},
+
+  // エアコン
+  {id:"ac_wall_basic",cat:"エアコン",q:"エアコン（壁掛設置）一般",a:9980,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_wall_func",cat:"エアコン",q:"エアコン（壁掛設置）各種機能付き",a:18700,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_wall_embed",cat:"エアコン",q:"エアコン（壁掛設置）壁埋め込み式",a:14300,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_wall_large",cat:"エアコン",q:"エアコン（壁掛設置）壁掛け大型（横幅1m以上）",a:14300,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_ceiling_small",cat:"エアコン",q:"エアコン（天井設置）小型（住居・家庭用）",a:20900,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_ceiling_large",cat:"エアコン",q:"エアコン（天井設置）大型（オフィス・店舗・施設用）",a:26400,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_floor_small",cat:"エアコン",q:"エアコン（床設置）小型置き型",a:14300,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"ac_floor_large",cat:"エアコン",q:"エアコン（床設置）大型置き型",a:26400,n:"2台目以降は種別問わず2,000円引き"},
+  {id:"outdoor",cat:"エアコン",q:"エアコンオプション：室外機",a:3300,n:"2台目以降の割引なし"},
+  {id:"outdoor_large",cat:"エアコン",q:"エアコンオプション：室外機大型",a:9900,n:"2台目以降の割引なし"},
+  {id:"moldcoat",cat:"エアコン",q:"エアコンオプション：防カビ抗菌コート",a:2750,n:"2台目以降の割引なし"},
+
+  // オプション・コーティング
+  {id:"floor_only",cat:"オプション",q:"床清掃のみ（水拭き、掃除機掛け）",a:330,n:"1㎡あたり"},
+  {id:"floor_std",cat:"オプション",q:"床清掃＋スタンダードワックス",a:605,n:"1㎡あたり"},
+  {id:"floor_high",cat:"オプション",q:"床清掃＋ハイグレードワックス",a:1100,n:"1㎡あたり"},
+  {id:"peel",cat:"オプション",q:"追加剥離サービス",a:1100,n:"1㎡あたり"},
+  {id:"carpet",cat:"オプション",q:"カーペット洗浄",a:1100,n:"1㎡あたり"},
+  {id:"carpetcoat",cat:"オプション",q:"カーペット防汚コーティング",a:1100,n:"1㎡あたり"},
+  {id:"deodorize",cat:"オプション",q:"除菌・消臭 ※除菌プロ",a:3850,n:"1部屋（12畳まで）。13〜24畳は2部屋分"},
+  {id:"balcony10",cat:"オプション",q:"ベランダ（10㎡未満）",a:7700,n:"手すりや壁面等も含む。以降10㎡ごとに7,700円"},
+  {id:"balcony20",cat:"オプション",q:"ベランダ（10㎡以上20㎡未満）",a:15400},
+  {id:"balcony30",cat:"オプション",q:"ベランダ（20㎡以上30㎡未満）",a:23100},
+  {id:"wall1_under20",cat:"オプション",q:"壁紙復元塗装 1枚塗り（20㎡未満）",a:15400,n:"一律料金"},
+  {id:"wall1_over20",cat:"オプション",q:"壁紙復元塗装 1枚塗り（20㎡以上）",a:770,n:"1㎡あたり。ヤニ用アイボリーWは＋55円/㎡"},
+  {id:"wall2_under20",cat:"オプション",q:"壁紙復元塗装 2枚塗り（20㎡未満）",a:20680,n:"一律料金"},
+  {id:"wall2_over20",cat:"オプション",q:"壁紙復元塗装 2枚塗り（20㎡以上）",a:1034,n:"1㎡あたり。ヤニ用アイボリーWは＋77円/㎡"},
+  {id:"tearrepair",cat:"オプション",q:"破れ補修（10cm四方まで）",a:2200,n:"1箇所"},
+  {id:"holerepair",cat:"オプション",q:"穴埋め補修（11箇所以上）",a:2200,n:"各壁面・天井 1面あたり。10箇所までは無料、11箇所以上は一律追加2,200円"},
+  {id:"keskin_u10",cat:"オプション",q:"Keskin光触媒コーティング（10㎡未満）",a:15950,n:"一律料金"},
+  {id:"keskin_o10",cat:"オプション",q:"Keskin光触媒コーティング（10㎡以上）",a:1595,n:"1㎡あたり"},
+  {id:"toilet_keskin_set",cat:"オプション",q:"トイレ＋Keskinコーティング",a:19360,n:"Keskin施工面（天井・壁面）15㎡まで"},
+
+  // セット・定額
+  {id:"set2",cat:"セット",q:"選べる水回りセット：2点セット",a:32890,n:"A キッチン"},
+  {id:"set3",cat:"セット",q:"選べる水回りセット：3点セット",a:45980,n:"B レンジフード"},
+  {id:"set4",cat:"セット",q:"選べる水回りセット：4点セット",a:57970,n:"C 浴室"},
+  {id:"set5_add",cat:"セット",q:"選べる水回りセット：5点セットにする場合の追加額",a:14493,n:"D 洗面所＋トイレ。E トイレ×2は割引対象外"},
+
+  {id:"wagamama_05",cat:"セット",q:"なんでもわがまま定額：0.5時間",a:3850},
+  {id:"wagamama_10",cat:"セット",q:"なんでもわがまま定額：1時間",a:7700},
+  {id:"wagamama_15",cat:"セット",q:"なんでもわがまま定額：1時間半",a:11550},
+  {id:"wagamama_20",cat:"セット",q:"なんでもわがまま定額：2時間",a:13200},
+  {id:"wagamama_25",cat:"セット",q:"なんでもわがまま定額：2時間半",a:16500},
+  {id:"wagamama_30",cat:"セット",q:"なんでもわがまま定額：3時間",a:19800},
+  {id:"wagamama_35",cat:"セット",q:"なんでもわがまま定額：3時間半",a:23100},
+  {id:"wagamama_40",cat:"セット",q:"なんでもわがまま定額：4時間",a:26400},
+  {id:"wagamama_45",cat:"セット",q:"なんでもわがまま定額：4時間半",a:29700},
+  {id:"wagamama_50",cat:"セット",q:"なんでもわがまま定額：5時間",a:33000},
+
+  {id:"regular1_20",cat:"セット",q:"定期清掃一般家庭向け：スタッフ1名・2時間",a:13200},
+  {id:"regular1_25",cat:"セット",q:"定期清掃一般家庭向け：スタッフ1名・2時間半",a:16500},
+  {id:"regular1_30",cat:"セット",q:"定期清掃一般家庭向け：スタッフ1名・3時間",a:19800},
+  {id:"regular1_35",cat:"セット",q:"定期清掃一般家庭向け：スタッフ1名・3時間半",a:23100},
+  {id:"regular2_20",cat:"セット",q:"定期清掃一般家庭向け：スタッフ2名・2時間",a:26400},
+  {id:"regular2_25",cat:"セット",q:"定期清掃一般家庭向け：スタッフ2名・2時間半",a:33000},
+  {id:"regular2_30",cat:"セット",q:"定期清掃一般家庭向け：スタッフ2名・3時間",a:39600},
+  {id:"regular2_35",cat:"セット",q:"定期清掃一般家庭向け：スタッフ2名・3時間半",a:46200},
+];
+
+let current = null;
+let correct = Number(localStorage.getItem("pricequiz_correct") || 0);
+let attempts = Number(localStorage.getItem("pricequiz_attempts") || 0);
+let mistakes = JSON.parse(localStorage.getItem("pricequiz_mistakes") || "[]");
+let mistakeSet = new Set(mistakes);
+let alreadyJudged = false;
+let lastId = null;
+
+const $ = (id)=>document.getElementById(id);
+const category = $("category");
+const mode = $("mode");
+const question = $("question");
+const note = $("note");
+const badge = $("badge");
+const answer = $("answer");
+const result = $("result");
+
+function yen(n){ return "¥" + Number(n).toLocaleString("ja-JP"); }
+function normalize(v){
+  return Number(String(v).replace(/[^\d]/g,""));
+}
+function pool(){
+  const cat = category.value;
+  let p = questions.filter(x => cat === "all" || x.cat === cat);
+  if(mode.value === "mistakes"){
+    p = p.filter(x => mistakeSet.has(x.id));
+  }
+  return p;
+}
+function updateStats(){
+  $("correct").textContent = correct;
+  $("attempts").textContent = attempts;
+  $("accuracy").textContent = attempts ? Math.round(correct/attempts*100) + "%" : "-";
+  localStorage.setItem("pricequiz_correct", correct);
+  localStorage.setItem("pricequiz_attempts", attempts);
+  localStorage.setItem("pricequiz_mistakes", JSON.stringify([...mistakeSet]));
+}
+function newQuestion(){
+  const p = pool();
+  result.className = "result";
+  result.innerHTML = "";
+  answer.value = "";
+  alreadyJudged = false;
+  if(!p.length){
+    current = null;
+    badge.textContent = "問題なし";
+    question.textContent = mode.value === "mistakes"
+      ? "この範囲には、まだ間違えた問題がありません。"
+      : "この範囲には問題がありません。";
+    note.textContent = "";
+    answer.disabled = true;
+    $("judge").disabled = true;
+    return;
+  }
+  let candidates = p.filter(x => x.id !== lastId);
+  if(!candidates.length) candidates = p;
+  current = candidates[Math.floor(Math.random()*candidates.length)];
+  lastId = current.id;
+  badge.textContent = current.cat;
+  question.textContent = current.q + " はいくら？";
+  note.textContent = current.n || "";
+  answer.disabled = false;
+  $("judge").disabled = false;
+  setTimeout(()=>answer.focus(), 50);
+}
+function judge(showOnly=false){
+  if(!current) return;
+  if(showOnly){
+    result.className = "result bad";
+    result.innerHTML = `正解は <span class="correctPrice">${yen(current.a)}</span>`;
+    return;
+  }
+  if(alreadyJudged) return;
+  const v = normalize(answer.value);
+  if(!answer.value.trim() || Number.isNaN(v)){
+    result.className = "result bad";
+    result.textContent = "金額を入力してください。";
+    return;
+  }
+  alreadyJudged = true;
+  attempts++;
+  if(v === current.a){
+    correct++;
+    mistakeSet.delete(current.id);
+    result.className = "result good";
+    result.innerHTML = `正解！ <span class="correctPrice">${yen(current.a)}</span>`;
+  }else{
+    mistakeSet.add(current.id);
+    result.className = "result bad";
+    result.innerHTML = `不正解。正解は <span class="correctPrice">${yen(current.a)}</span>`;
+  }
+  updateStats();
+}
+$("judge").addEventListener("click",()=>judge(false));
+$("showAnswer").addEventListener("click",()=>judge(true));
+$("next").addEventListener("click",newQuestion);
+answer.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    if(alreadyJudged) newQuestion();
+    else judge(false);
+  }
+});
+category.addEventListener("change",newQuestion);
+mode.addEventListener("change",newQuestion);
+$("resetStats").addEventListener("click",()=>{
+  correct=0; attempts=0; updateStats();
+});
+$("resetMistakes").addEventListener("click",()=>{
+  mistakeSet.clear(); updateStats(); newQuestion();
+});
+
+updateStats();
+newQuestion();
+</script>
+</body>
+</html>
