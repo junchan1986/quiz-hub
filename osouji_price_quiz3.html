@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>料金表テスト クイズ2｜おそうじ革命 研修用</title>
+<style>
+:root{--bg:#f5f7f5;--card:#fff;--text:#1f2a22;--muted:#6b756d;--line:#dfe6df;--accent:#2f7d4a;--accent2:#eaf5ed;--bad:#b83232;--badbg:#fdecec;--good:#1f7a3f;--goodbg:#eaf7ef}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 40px}h1{font-size:24px;margin:6px 0 4px}.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px rgba(0,0,0,.045)}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}select,button,input{width:100%;font:inherit}select,input{border:1px solid #cfd8cf;background:#fff;border-radius:10px;padding:12px;outline:none}select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,125,74,.12)}
+.quiz{margin-top:12px;border-top:1px solid var(--line);padding-top:18px}.quiz.hidden{display:none}.badge{display:inline-block;font-size:12px;color:var(--accent);background:var(--accent2);padding:5px 9px;border-radius:999px;margin-bottom:12px}.question{font-size:22px;font-weight:750;line-height:1.5;margin:6px 0 8px}.note{min-height:22px;color:var(--muted);font-size:13px;margin-bottom:14px}
+.answerRow{display:grid;grid-template-columns:1fr 110px;gap:10px}.answerBox{position:relative}.answerBox input{font-size:22px;font-weight:700}.unit{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;display:none}.answerBox.price input{text-align:right;padding-right:42px}.answerBox.price .unit{display:block}
+button{border:0;border-radius:10px;padding:12px 14px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#fff}.secondary{background:#eef1ee;color:var(--text)}.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
+.result{margin-top:14px;border-radius:12px;padding:13px 14px;display:none;line-height:1.5}.result.good{display:block;background:var(--goodbg);color:var(--good)}.result.bad{display:block;background:var(--badbg);color:var(--bad)}.correctAnswer{font-size:22px;font-weight:800}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.stats{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#f7f9f7;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}.smallControls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.smallControls button{width:auto;font-size:12px;padding:8px 10px}.footer{color:var(--muted);font-size:11px;line-height:1.6;margin-top:14px}.footer.hidden{display:none}
+.listPanel{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:18px}.listPanel.active{display:block}.listSummary{font-size:13px;color:var(--muted);margin-bottom:12px}.qaList{display:grid;gap:10px}.qaItem{border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:#fbfcfb}.qaHead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px}.qaNo{font-size:11px;font-weight:800;color:var(--accent);background:var(--accent2);padding:4px 7px;border-radius:999px}.qaCat{font-size:11px;color:var(--muted)}.qaQ{font-size:15px;font-weight:700;line-height:1.55;margin-bottom:7px}.qaA{font-size:18px;font-weight:800;color:var(--good);line-height:1.45}.qaNote{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5}
+@media(max-width:560px){.controls{grid-template-columns:1fr}.answerRow{grid-template-columns:1fr}.question{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>料金表テスト クイズ2</h1>
+<div class="sub">おそうじ革命・研修用｜料金表テスト①・②・③のみ</div>
+<div class="card">
+<div class="controls">
+<div><label for="category">出題範囲</label><select id="category"><option value="all">①②③ 全部</option><option value="料金表テスト①">料金表テスト①</option><option value="料金表テスト②">料金表テスト②</option><option value="料金表テスト③">料金表テスト③</option></select></div>
+<div><label for="mode">出題モード</label><select id="mode"><option value="random">ランダム</option><option value="mistakes">間違えた問題だけ</option><option value="list">問題・答え一覧</option></select></div>
+</div>
+<div class="quiz" id="quizPanel">
+<div class="badge" id="badge">料金表テスト①</div>
+<div class="question" id="question">読み込み中...</div>
+<div class="note" id="note"></div>
+<div class="answerRow"><div class="answerBox" id="answerBox"><input id="answer" autocomplete="off" placeholder="答えを入力"><span class="unit">円</span></div><button class="primary" id="judge">判定</button></div>
+<div id="result" class="result"></div>
+<div class="actions"><button class="secondary" id="showAnswer">答えを見る</button><button class="primary" id="next">次の問題</button></div>
+<div class="stats"><div class="stat"><b id="correct">0</b><span>正解</span></div><div class="stat"><b id="attempts">0</b><span>回答</span></div><div class="stat"><b id="accuracy">-</b><span>正答率</span></div></div>
+<div class="smallControls"><button class="ghost" id="resetStats">成績をリセット</button><button class="ghost" id="resetMistakes">間違い履歴をリセット</button></div>
+</div>
+<div class="listPanel" id="listPanel"><div class="listSummary" id="listSummary"></div><div class="qaList" id="qaList"></div></div>
+<div class="footer" id="footer">料金は「10,000」「¥10,000」「10000」のどれでもOK。文字回答は全角・半角スペースや「／」「/」の違いをある程度吸収します。</div>
+</div>
+</div>
+<script>
+const questions=[
+{id:'1-1',cat:'料金表テスト①',q:'エアコン（壁掛け設置） 一般',type:'price',a:'9980',display:'9,980円'},
+{id:'1-2',cat:'料金表テスト①',q:'エアコン（壁掛け設置） 各種機能付き',type:'price',a:'18700',display:'18,700円'},
+{id:'1-3',cat:'料金表テスト①',q:'キッチン',type:'price',a:'17930',display:'17,930円'},
+{id:'1-4',cat:'料金表テスト①',q:'トイレ',type:'price',a:'8250',display:'8,250円'},
+{id:'1-5',cat:'料金表テスト①',q:'フード無しプロペラ、天埋換気扇タイプ',type:'price',a:'9900',display:'9,900円'},
+{id:'1-6',cat:'料金表テスト①',q:'レンジフード',type:'price',a:'17930',display:'17,930円'},
+{id:'1-7',cat:'料金表テスト①',q:'洗面所',type:'price',a:'8250',display:'8,250円'},
+{id:'1-8',cat:'料金表テスト①',q:'浴室',type:'price',a:'17930',display:'17,930円'},
+{id:'1-9',cat:'料金表テスト①',q:'選べる水回りセットメニュー 2点セット',type:'price',a:'32890',display:'32,890円'},
+{id:'1-10',cat:'料金表テスト①',q:'なんでもわがまま定額 0.5時間',type:'price',a:'3850',display:'3,850円'},
+{id:'1-11',cat:'料金表テスト①',q:'選べる水回りセットメニュー 3点セット',type:'price',a:'45980',display:'45,980円'},
+{id:'1-12',cat:'料金表テスト①',q:'床清掃のみ（水拭き、掃除機掛け）1㎡あたり',type:'price',a:'330',display:'330円'},
+{id:'1-13',cat:'料金表テスト①',q:'選べる水回りセットメニュー 4点セット',type:'price',a:'57970',display:'57,970円'},
+{id:'1-14',cat:'料金表テスト①',q:'なんでもわがまま定額 1時間',type:'price',a:'7700',display:'7,700円'},
+{id:'1-15',cat:'料金表テスト①',q:'床清掃＋スタンダードワックス 1㎡あたり',type:'price',a:'605',display:'605円'},
+{id:'2-1',cat:'料金表テスト②',q:'防カビ抗菌コート',type:'price',a:'2750',display:'2,750円'},
+{id:'2-2',cat:'料金表テスト②',q:'室外機',type:'price',a:'3300',display:'3,300円'},
+{id:'2-3',cat:'料金表テスト②',q:'室外機 大型',type:'price',a:'9900',display:'9,900円'},
+{id:'2-4',cat:'料金表テスト②',q:'食洗機内部',type:'price',a:'7700',display:'7,700円'},
+{id:'2-5',cat:'料金表テスト②',q:'シンク水垢防止撥水コート',type:'price',a:'3850',display:'3,850円'},
+{id:'2-6',cat:'料金表テスト②',q:'エプロン内部',type:'price',a:'3080',display:'3,080円'},
+{id:'2-7',cat:'料金表テスト②',q:'浴室乾燥機付き換気扇',type:'price',a:'11000',display:'11,000円'},
+{id:'2-8',cat:'料金表テスト②',q:'浴室＋浴室追い焚き配管洗浄',type:'price',a:'34980',display:'34,980円'},
+{id:'2-9',cat:'料金表テスト②',q:'トイレタンク内部',type:'price',a:'3850',display:'3,850円'},
+{id:'2-10',cat:'料金表テスト②',q:'浴室、洗面所、トイレ通常換気扇（内部）',type:'price',a:'3850',display:'3,850円'},
+{id:'2-11',cat:'料金表テスト②',q:'網戸洗浄1枚（窓一式ご依頼の場合）',type:'price',a:'1100',display:'1,100円'},
+{id:'2-12',cat:'料金表テスト②',q:'洗濯パン',type:'price',a:'2750',display:'2,750円'},
+{id:'2-13',cat:'料金表テスト②',q:'ベランダ（10㎡以上20㎡未満）',type:'price',a:'15400',display:'15,400円'},
+{id:'2-14',cat:'料金表テスト②',q:'浴室追い焚き配管除菌洗浄',type:'price',a:'18700',display:'18,700円'},
+{id:'2-15',cat:'料金表テスト②',q:'定期清掃一般家庭向け スタッフ1名 2時間',type:'price',a:'13200',display:'13,200円'},
+{id:'3-1',cat:'料金表テスト③',q:'エアコン（壁掛け設置） 一般＋防カビ抗菌コート1台',type:'price',a:'12730',display:'12,730円',n:'9,980＋2,750'},
+{id:'3-2',cat:'料金表テスト③',q:'エアコン（壁掛け設置） 各種機能付き 2台',type:'price',a:'35400',display:'35,400円',n:'2台目割引 -2,000円'},
+{id:'3-3',cat:'料金表テスト③',q:'洗濯機（8kg未満・乾燥機能なし）',type:'price',a:'17600',display:'17,600円'},
+{id:'3-4',cat:'料金表テスト③',q:'キッチンとレンジフード',type:'price',a:'32890',display:'32,890円',n:'水回り2セット'},
+{id:'3-5',cat:'料金表テスト③',q:'浴室とトイレ1箇所',type:'price',a:'26180',display:'26,180円',n:'17,930＋8,250'},
+{id:'3-6',cat:'料金表テスト③',q:'トイレ1箇所と洗面所1箇所',type:'price',a:'16500',display:'16,500円',n:'8,250×2'},
+{id:'3-7',cat:'料金表テスト③',q:'レンジフードとトイレ2箇所',type:'price',a:'32890',display:'32,890円',n:'水回り2セット'},
+{id:'3-8',cat:'料金表テスト③',q:'トイレ2箇所と洗面所2箇所',type:'price',a:'32890',display:'32,890円',n:'水回り2セット'},
+{id:'3-9',cat:'料金表テスト③',q:'除菌消臭※除菌プロ1部屋（12畳まで）',type:'price',a:'3850',display:'3,850円'},
+{id:'3-10',cat:'料金表テスト③',q:'除菌消臭※除菌プロ1部屋（12畳まで）のメニューで使用する薬剤は？',type:'text',a:'除菌剤',display:'除菌剤'},
+{id:'3-11',cat:'料金表テスト③',q:'シンク水垢防止撥水コートのメニューで使用する薬剤は？',type:'text',a:'撥水コート',display:'撥水コート'},
+{id:'3-12',cat:'料金表テスト③',q:'鏡水垢防止コーティングのメニューで使用する薬剤は？',type:'text',a:'親水コート',display:'親水コート'},
+{id:'3-13',cat:'料金表テスト③',q:'鏡水垢防止＋菌分解除去コーティングのメニューで使用する薬剤は？',type:'text',a:'親水コート/ケスキン',display:'親水コート／ケスキン'},
+{id:'3-14',cat:'料金表テスト③',q:'追加剥離サービスのメニュー後は必ず床清掃＋○○○○○○○ワックスをする',type:'text',a:'ハイグレード',display:'ハイグレード'},
+{id:'3-15',cat:'料金表テスト③',q:'空室徹底清掃作業範囲はエアコン内部とレンジフード内部は作業範囲外である。○か×か',type:'text',a:'○',display:'○',aliases:['〇','o','O']}
+];
+let current=null,stats=JSON.parse(localStorage.getItem('quiz2Stats')||'{"correct":0,"attempts":0}'),mistakes=JSON.parse(localStorage.getItem('quiz2Mistakes')||'[]');
+const $=id=>document.getElementById(id);function save(){localStorage.setItem('quiz2Stats',JSON.stringify(stats));localStorage.setItem('quiz2Mistakes',JSON.stringify(mistakes))}function updateStats(){$('correct').textContent=stats.correct;$('attempts').textContent=stats.attempts;$('accuracy').textContent=stats.attempts?Math.round(stats.correct/stats.attempts*100)+'%':'-'}
+function categoryPool(){return questions.filter(x=>$('category').value==='all'||x.cat===$('category').value)}
+function pool(){let p=categoryPool();if($('mode').value==='mistakes')p=p.filter(x=>mistakes.includes(x.id));return p}
+function normalize(v,type){v=String(v??'').trim();if(type==='price')return v.replace(/[¥￥円,，\s]/g,'').replace(/[^0-9]/g,'');return v.normalize('NFKC').replace(/[\s　]/g,'').replace(/[／]/g,'/').toLowerCase()}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderList(){const p=categoryPool();$('listSummary').textContent=p.length+'問｜問題と正解を一覧表示';$('qaList').innerHTML=p.map((x,i)=>'<div class="qaItem"><div class="qaHead"><span class="qaNo">'+(i+1)+'</span><span class="qaCat">'+escapeHtml(x.cat)+'</span></div><div class="qaQ">'+escapeHtml(x.q)+'</div><div class="qaA">答え：'+escapeHtml(x.display)+'</div>'+(x.n?'<div class="qaNote">'+escapeHtml(x.n)+'</div>':'')+'</div>').join('')}
+function switchView(){const isList=$('mode').value==='list';$('quizPanel').classList.toggle('hidden',isList);$('listPanel').classList.toggle('active',isList);$('footer').classList.toggle('hidden',isList);if(isList){current=null;renderList()}else load()}
+function load(){if($('mode').value==='list')return;const p=pool();$('result').className='result';$('result').innerHTML='';$('answer').value='';if(!p.length){current=null;$('question').textContent=$('mode').value==='mistakes'?'間違い履歴に問題がありません':'問題がありません';$('note').textContent='';return}current=p[Math.floor(Math.random()*p.length)];$('badge').textContent=current.cat;$('question').textContent=current.q;$('note').textContent=current.n||'';$('answerBox').className='answerBox '+(current.type==='price'?'price':'');$('answer').inputMode=current.type==='price'?'numeric':'text';$('answer').placeholder=current.type==='price'?'例：10000':'答えを入力';setTimeout(()=>$('answer').focus(),50)}
+function isCorrect(){if(!current)return false;const v=normalize($('answer').value,current.type),main=normalize(current.a,current.type);if(v===main)return true;return (current.aliases||[]).some(a=>normalize(a,current.type)===v)}
+function judge(){if(!current)return;if(!$('answer').value.trim())return;stats.attempts++;if(isCorrect()){stats.correct++;mistakes=mistakes.filter(id=>id!==current.id);$('result').className='result good';$('result').innerHTML='正解！<br><span class="correctAnswer">'+current.display+'</span>'}else{if(!mistakes.includes(current.id))mistakes.push(current.id);$('result').className='result bad';$('result').innerHTML='不正解。正解は<br><span class="correctAnswer">'+current.display+'</span>'+(current.n?'<br><small>'+current.n+'</small>':'')}save();updateStats()}
+$('judge').onclick=judge;$('next').onclick=load;$('showAnswer').onclick=()=>{if(!current)return;$('result').className='result good';$('result').innerHTML='答え<br><span class="correctAnswer">'+current.display+'</span>'+(current.n?'<br><small>'+current.n+'</small>':'')};$('answer').addEventListener('keydown',e=>{if(e.key==='Enter')judge()});$('category').onchange=()=>{$('mode').value==='list'?renderList():load()};$('mode').onchange=switchView;$('resetStats').onclick=()=>{stats={correct:0,attempts:0};save();updateStats()};$('resetMistakes').onclick=()=>{mistakes=[];save();if($('mode').value==='mistakes')load()};updateStats();switchView();
+</script>
+</body></html>
